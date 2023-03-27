@@ -6,9 +6,6 @@ function getReviews(require, response, next){
     .then((reviews) => {
      response.status(200).send({reviews: reviews})
     })
-    .catch((err) => {
-     res.status(404).send({msg: 'End-point Not Found'})
-    })
  }
 
 module.exports = {getReviews}

@@ -54,7 +54,7 @@ describe('GET /api/categories', () => {
 describe.only('GET /api/reviews/:review_id', () => {
     test('200: Ensures that what is passed IS an Object', () =>{
         return request(app)
-        .get('/api/reviews/2')
+        .get('/api/reviews')
         .expect(200)
         .then(({body}) => {
             const reviews = body.reviews;
@@ -63,16 +63,17 @@ describe.only('GET /api/reviews/:review_id', () => {
     });
     test('200: Returns the length of the Object', () =>{
         return request(app)
-        .get('/api/reviews/2')
+        .get('/api/reviews')
         .expect(200)
         .then(({body}) => {
             const reviews = body.reviews;
+            console.log(reviews)
             expect(reviews.length).toBe(13);
         });
     });
     test('200: Ensures that the Object formatting/type is correct', () =>{
         return request(app)
-        .get('/api/reviews/2')
+        .get('/api/reviews')
         .expect(200)
         .then(({body}) => {
             const reviews = body.reviews;
@@ -87,14 +88,6 @@ describe.only('GET /api/reviews/:review_id', () => {
                     votes: expect.any(Number),
                 });
             });
-        });
-    });
-    test('404: Returns "End-point Not Found" when an invalid end-point is entered ', () =>{
-        return request(app)
-        .get('/api/reviews/')
-        .expect(404)
-        .then(({body: {msg}}) => {
-            expect(msg).toBe('End-point Not Found');
         });
     });
 })
