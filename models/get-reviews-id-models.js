@@ -6,7 +6,7 @@ function fetchReviewsByID(reviewId){
     return db.query(`SELECT * FROM reviews WHERE review_id = $1`, [reviewId])
     .then((result) => {
         if(result.rowCount === 0){
-            return Project.reject({status: 404, msg: 'End-point Not Found'});
+            return Promise.reject({status: 404, msg: 'ID Not Found'});
         }
         return result.rows[0]
     })

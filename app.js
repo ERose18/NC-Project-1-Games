@@ -9,12 +9,13 @@ app.get('/api/categories', getCategories);
 
 app.get('/api/reviews/:review_id', getReviewsByID);
 
+app.all('/*', (req, res) => {
+    res.status(404).send({msg: 'End-point Not Found'})
+});
+
 app.use(handlePSQL400s);
 app.use(handleCustomError);
 app.use(handle500);
 
-app.all('/*', (req, res) => {
-    res.status(404).send({msg: 'End-point Not Found'})
-});
 
 module.exports = app;

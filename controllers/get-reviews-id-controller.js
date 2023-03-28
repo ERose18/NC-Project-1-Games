@@ -5,7 +5,7 @@ function getReviewsByID(require, response, next){
     const {review_id} = require.params;
     fetchReviewsByID(review_id)
     .then((reviews) => {
-     response.status(200).send({reviews: reviews})
+     response.status(200).send({review: reviews})
     })
     .catch((err) => {
         next(err);
