@@ -51,3 +51,51 @@ describe('GET /api/categories', () => {
         });
     });
 });
+
+describe('GET /api/reviews/:review_id', () => {
+    test('200: Ensures that what is passed IS an Object', () =>{
+        return request(app)
+        .get('/api/reviews/2')
+        .expect(200)
+        .then(({body}) => {
+            const reviews = body.reviews;
+            expect(reviews).toBeInstanceOf(Object);
+        });
+    });
+    test('200: Accepts the review with the given id', () => {
+        return request(app)
+        .get('/api/reviews/2')
+        .then(({body}) => {
+            const {review}= body.reviews;
+            (review) => {
+                expect.objectContaining({
+                    review_id: 2,
+                    title: expect.any(String),
+                    designer: expect.any(String),
+                    owner: expect.any(String),
+                    review_img_url: expect.any(String),
+                    review_body: expect.any(String),
+                    category: expect.any(String),
+                    created_at: expect.any(Number),
+                    votes: expect.any(Number),
+                })
+            }
+        })
+    })
+    test('404: Returns "End-point Not Found" if given no "ID"', () =>{
+        return request(app)
+        .get('/api/reviews/')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('End-point Not Found');
+        });
+    });
+    test('400: Returns "Invalid ID" if given an "ID" that is not a number', () =>{
+        return request(app)
+        .get('/api/reviews/nonum')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Invalid ID');
+        });
+    });
+})
