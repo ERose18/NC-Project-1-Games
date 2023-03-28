@@ -58,9 +58,7 @@ describe('GET /api/reviews/:review_id', () => {
         .get('/api/reviews/2')
         .then(({body}) => {
             const review = body.review;
-            console.log(review);
-            (review) => {
-                expect.toMatchObject({
+                expect(review).toMatchObject({
                     review_id: 2,
                     title: expect.any(String),
                     designer: expect.any(String),
@@ -68,11 +66,11 @@ describe('GET /api/reviews/:review_id', () => {
                     review_img_url: expect.any(String),
                     review_body: expect.any(String),
                     category: expect.any(String),
-                    created_at: expect.any(Number),
+                    created_at: expect.any(String),
                     votes: expect.any(Number),
                 })
             }
-        })
+        )
     })
     test('404: Returns "End-point Not Found" if given an "ID" that isnt in the database', () =>{
         return request(app)
