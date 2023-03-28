@@ -3,6 +3,7 @@ const app = require('../app');
 const request = require('supertest');
 const data = require('../db/data/test-data/index');
 const seed = require('../db/seeds/seed');
+const sorted = require('jest-sorted');
 const { afterAll } = require('@jest/globals');
 
 beforeEach(() => {return seed(data)});
@@ -89,3 +90,39 @@ describe('GET /api/reviews/:review_id', () => {
         });
     });
 })
+
+describe('GET /api/reviews', () => {
+    test('200: Ensures that what is passed IS an Object', () =>{ 
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({body}) => {
+            const reviews = body.reviews;
+            expect(reviews).toBeInstanceOf(Object);
+    });
+    });
+    test('200: Returns a review with a comment_count', () =>{
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({body}) => {
+            const reviews = body.reviews;
+            console.log(reviews)
+            expect(reviews.length).toBe(13);
+            reviews.forEach((review) => {
+                expect(review).toMatchObject({
+                        owner: expect.any(String),
+                        title: expect.any(String),
+                        review_id: expect.any(Number),
+                        designer: expect.any(String),
+                        review_img_url: expect.any(String),
+                        category: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        comment_count: expect.any(Number),
+                 });   
+            })
+          expect(reviews).toBeSortedBy('created_at', {descending: true});
+         });
+    });   
+ })
