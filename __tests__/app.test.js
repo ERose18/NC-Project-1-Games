@@ -126,4 +126,50 @@ describe('GET /api/reviews', () => {
     });   
  })
 
- 
+ describe('GET /api/reviews/:review_id/comments', () => {
+    test('200: Returns an empty array of comments when passed a review_id with no comments', () =>{ 
+        return request(app)
+        .get('/api/reviews/1/comments')
+        .expect(200)
+        .then(({body}) => {
+            const comments = body.comments;
+            expect(comments).toEqual([]);
+     });
+    });
+    test('200: Returns an array of comments from the given review_id', () =>{
+        return request(app)
+        .get('/api/reviews/3/comments')
+        .expect(200)
+        .then(({body}) => {
+            const comments = body.comments;
+            expect(comments.length).toBe(3);
+            comments.forEach((comment) => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    review_id: 3,
+                 });   
+            })
+         expect(comments).toBeSortedBy('created_at', {descending: true});
+         });
+    });  
+    test('404: Returns "ID Not Found" if given an "ID" that isnt in the database', () =>{
+        return request(app)
+        .get('/api/reviews/9000/comments')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('ID Not Found');
+        });
+    }); 
+    test('400: Returns "Invalid ID" if given an "ID" that is not a number', () =>{
+        return request(app)
+        .get('/api/reviews/nonum/comments')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Invalid ID');
+        });
+    });
+ })
