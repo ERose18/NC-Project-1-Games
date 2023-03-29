@@ -127,25 +127,6 @@ describe('GET /api/reviews', () => {
  })
 
  describe('GET /api/reviews/:review_id/comments', () => {
-    test('200: Ensures that what is passed IS an Object', () =>{ 
-        return request(app)
-        .get('/api/reviews/3/comments')
-        .expect(200)
-        .then(({body}) => {
-            console.log(body)
-            const comments = body.comments;
-            expect(comments).toBeInstanceOf(Object);
-     });
-    });
-    test('200: Returns the length of the Object passed', () =>{ 
-        return request(app)
-        .get('/api/reviews/3/comments')
-        .expect(200)
-        .then(({body}) => {
-            const comments = body.comments;
-            expect(comments.length).toBe(3);
-     });
-    });
     test('200: Returns an empty array of comments when passed a review_id with no comments', () =>{ 
         return request(app)
         .get('/api/reviews/1/comments')
@@ -161,7 +142,7 @@ describe('GET /api/reviews', () => {
         .expect(200)
         .then(({body}) => {
             const comments = body.comments;
-            console.log(comments)
+            expect(comments.length).toBe(3);
             comments.forEach((comment) => {
                 expect(comment).toMatchObject({
                     comment_id: expect.any(Number),
@@ -183,4 +164,12 @@ describe('GET /api/reviews', () => {
             expect(body.msg).toBe('ID Not Found');
         });
     }); 
+    test('400: Returns "Invalid ID" if given an "ID" that is not a number', () =>{
+        return request(app)
+        .get('/api/reviews/nonum/comments')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Invalid ID');
+        });
+    });
  })
