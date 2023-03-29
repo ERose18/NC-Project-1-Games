@@ -107,7 +107,6 @@ describe('GET /api/reviews', () => {
         .expect(200)
         .then(({body}) => {
             const reviews = body.reviews;
-            console.log(reviews)
             expect(reviews.length).toBe(13);
             reviews.forEach((review) => {
                 expect(review).toMatchObject({
@@ -126,3 +125,63 @@ describe('GET /api/reviews', () => {
          });
     });   
  })
+
+ describe('GET /api/reviews/:review_id/comments', () => {
+    test('200: Ensures that what is passed IS an Object', () =>{ 
+        return request(app)
+        .get('/api/reviews/3/comments')
+        .expect(200)
+        .then(({body}) => {
+            console.log(body)
+            const comments = body.comments;
+            expect(comments).toBeInstanceOf(Object);
+     });
+    });
+    test('200: Returns the length of the Object passed', () =>{ 
+        return request(app)
+        .get('/api/reviews/3/comments')
+        .expect(200)
+        .then(({body}) => {
+            const comments = body.comments;
+            expect(comments.length).toBe(3);
+     });
+    });
+    test('200: Returns an empty array of comments when passed a review_id with no comments', () =>{ 
+        return request(app)
+        .get('/api/reviews/1/comments')
+        .expect(200)
+        .then(({body}) => {
+            const comments = body.comments;
+            expect(comments).toEqual([]);
+     });
+    });
+    test('200: Returns an array of comments from the given review_id', () =>{
+        return request(app)
+        .get('/api/reviews/3/comments')
+        .expect(200)
+        .then(({body}) => {
+            const comments = body.comments;
+            console.log(comments)
+            comments.forEach((comment) => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    review_id: 3,
+                 });   
+            })
+         expect(comments).toBeSortedBy('created_at', {descending: true});
+         });
+    });  
+    test('404: Returns "ID Not Found" if given an "ID" that isnt in the database', () =>{
+        return request(app)
+        .get('/api/reviews/9000/comments')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('ID Not Found');
+        });
+    }); 
+ })
+
