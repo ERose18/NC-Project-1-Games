@@ -72,7 +72,7 @@ describe('GET /api/reviews/:review_id', () => {
             }
         )
     })
-    test('404: Returns "End-point Not Found" if given an "ID" that isnt in the database', () =>{
+    test('404: Returns "ID Not Found" if given an "ID" that isnt in the database', () =>{
         return request(app)
         .get('/api/reviews/9000')
         .expect(404)
@@ -363,20 +363,20 @@ describe('GET /api/reviews', () => {
         .delete('/api/comments/3')
         .expect(204)
     });  
-    test('404: Returns "End-point Not Found" if given an "ID" that is Invalid', () =>{
+    test('404: Returns "Comment Not Found" if given an "ID" that is Invalid', () =>{
         return request(app)
-        .get('/api/comments/notanum')
+        .delete('/api/comments/31387')
         .expect(404)
         .then(({body}) => {
-            expect(body.msg).toBe('End-point Not Found');
+            expect(body.msg).toBe('Comment Not Found');
         });
     }); 
-    test('404: Returns "End-point Not Found" if given an "ID" that isnt in the database', () =>{
+    test('400: Returns "Invalid ID" if given an "ID" that isnt in the database', () =>{
         return request(app)
-        .get('/api/comments/9000')
-        .expect(404)
+        .delete('/api/comments/wnwadoi')
+        .expect(400)
         .then(({body}) => {
-            expect(body.msg).toBe('End-point Not Found');
+            expect(body.msg).toBe('Invalid ID');
         });
     }); 
  })
