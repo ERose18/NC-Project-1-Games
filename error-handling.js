@@ -1,6 +1,8 @@
 exports.handlePSQL400s =(err, request, response, next) => {
     if(err.code === '22P02'){
         response.status(400).send({msg: 'Invalid ID'});
+    } else if(err.code === '23502'){
+        response.status(400).send({msg: 'Error: Missing required information'})
     } else {
         next(err);
     }
