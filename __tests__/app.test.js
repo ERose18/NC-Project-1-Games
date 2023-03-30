@@ -247,16 +247,18 @@ describe('GET /api/reviews', () => {
                 expect(body.msg).toBe('Error: Missing required information');
             })
     })
-    it('400: POST responds with an error message when missing required information', () => {
+    it('404: POST responds with an error message when missing required information', () => {
         const newUserComment = {
-            body: "Here is the wild comment",
+            author: 'notAnAuthor',
+            body: "wrongComment",
         }
         return request(app)
             .post('/api/reviews/1/comments')
             .send(newUserComment)
-            .expect(400)
+            .expect(404)
             .then(({body}) => {
-                expect(body.msg).toBe('Error: Missing required information');
+                expect(body.msg).toBe('Error: Information Not Valid');
             })
     })
+    
  })
