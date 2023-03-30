@@ -47,7 +47,6 @@ describe('GET /api/categories', () => {
         .get('/api/categories/wrongendpoint')
         .expect(404)
         .then(({body: {msg}}) => {
-            // const categories = body.categories;
             expect(msg).toBe('End-point Not Found');
         });
     });
@@ -73,7 +72,7 @@ describe('GET /api/reviews/:review_id', () => {
             }
         )
     })
-    test('404: Returns "End-point Not Found" if given an "ID" that isnt in the database', () =>{
+    test('404: Returns "ID Not Found" if given an "ID" that isnt in the database', () =>{
         return request(app)
         .get('/api/reviews/9000')
         .expect(404)
@@ -356,4 +355,28 @@ describe('GET /api/reviews', () => {
                 expect(body.msg).toBe('Error: Missing required information');
             })
     })
+ })
+
+ describe('DELETE /api/comments/:comment_id', () => {
+    test('204: DELETES the comment with the given comment id', () =>{
+        return request(app)
+        .delete('/api/comments/3')
+        .expect(204)
+    });  
+    test('404: Returns "Comment Not Found" if given an "ID" that is Invalid', () =>{
+        return request(app)
+        .delete('/api/comments/31387')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('Comment Not Found');
+        });
+    }); 
+    test('400: Returns "Invalid ID" if given an "ID" that isnt in the database', () =>{
+        return request(app)
+        .delete('/api/comments/wnwadoi')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Invalid ID');
+        });
+    }); 
  })
