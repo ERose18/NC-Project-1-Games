@@ -5,6 +5,7 @@ const {getReviewCommentsByID} = require('./controllers/get-reviews-comments-cont
 const {postNewCommentInfo} = require('./controllers/post-reviews-comments-controllers');
 const {patchOldVotes} = require('./controllers/patch-reviews-controllers');
 const {deleteUnwantedComment} = require('./controllers/delete-comment-controller');
+const  {getUsers} = require('./controllers/get-users-controllers');
 const express = require('express');
 const { handlePSQL400s, handleCustomError, handle500 } = require('./error-handling');
 
@@ -24,7 +25,9 @@ app.post('/api/reviews/:review_id/comments', postNewCommentInfo);
 
 app.patch('/api/reviews/:review_id', patchOldVotes);
 
-app.delete('/api/comments/:comment_id', deleteUnwantedComment)
+app.delete('/api/comments/:comment_id', deleteUnwantedComment);
+
+app.get('/api/users', getUsers);
 
 app.all('/*', (req, res) => {
     res.status(404).send({msg: 'End-point Not Found'})
