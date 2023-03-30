@@ -380,3 +380,41 @@ describe('GET /api/reviews', () => {
         });
     }); 
  })
+
+
+ describe('GET /api/users', () => {
+    test('200: Ensures that what is passed IS an Object', () =>{ 
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body}) => {
+            const users = body.users;
+            expect(users).toBeInstanceOf(Object);
+    });
+    });
+    test('200: Returns an object with the following properties (username, name, avatar_url)', () =>{
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body}) => {
+            const users = body.users;
+            expect(users.length).toBe(4);
+            users.forEach((user) => {
+                expect(user).toMatchObject({
+                        username: expect.any(String),
+                        name: expect.any(String),
+                        avatar_url: expect.any(String),
+                 });   
+            })
+         });
+    });   
+    test('404: Returns "End-point Not Found" when an invalid end-point is entered ', () =>{
+        return request(app)
+        .get('/api/users/wrongendpoint')
+        .expect(404)
+        .then(({body: {msg}}) => {
+            expect(msg).toBe('End-point Not Found');
+        });
+    });
+ })
+
