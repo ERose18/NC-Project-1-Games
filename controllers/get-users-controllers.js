@@ -7,6 +7,9 @@ function getUsers(require, response, next){
     .then((users) => {
     response.status(200).send({users: users})
  })
+ .catch((err) => {
+    next(err);
+})
 }
 
   
