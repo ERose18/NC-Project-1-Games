@@ -345,4 +345,15 @@ describe('GET /api/reviews', () => {
             expect(body.msg).toBe('Invalid ID');
         });
     }); 
+    it('400: POST responds with an error message when missing required information', () => {
+        const newVoteCount = {
+        }
+        return request(app)
+            .post('/api/reviews/1/comments')
+            .send(newVoteCount)
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe('Error: Missing required information');
+            })
+    })
  })
