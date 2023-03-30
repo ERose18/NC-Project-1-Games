@@ -173,3 +173,90 @@ describe('GET /api/reviews', () => {
         });
     });
  })
+
+ describe('POST /api/reviews/:review_id/comments', () => {
+    test('201: adds a new comment and returns the information from that newly created comment', () =>{
+        const newUserComment = {
+            body: "Here is the wild comment",
+            author: 'dav3rid',
+        }
+        return request(app)
+        .post('/api/reviews/1/comments')
+        .send(newUserComment)
+        .expect(201)
+        .then(({body}) => {
+            const comments = body.comments;
+                expect(comments).toEqual({
+                    comment_id: expect.any(Number),
+                    votes: 0,
+                    author: 'dav3rid',
+                    body: "Here is the wild comment",
+                    review_id: 1,
+                    created_at: expect.any(String),
+             })
+         });
+    });  
+    test('201: adds a new comment and returns the information from that newly created comment, ignoring unnecessary information', () =>{
+        const newUserComment = {
+            body: "Here is the wild comment",
+            author: 'dav3rid',
+            another: "thing",
+            votes:"something"
+        }
+        return request(app)
+        .post('/api/reviews/1/comments')
+        .send(newUserComment)
+        .expect(201)
+        .then(({body}) => {
+            const comments = body.comments;
+                expect(comments).toEqual({
+                    comment_id: expect.any(Number),
+                    votes: 0,
+                    author: 'dav3rid',
+                    body: "Here is the wild comment",
+                    review_id: 1,
+                    created_at: expect.any(String),
+             })
+         });
+    });  
+    test('404: Returns "ID Not Found" if given an "ID" that isnt in the database', () =>{
+        return request(app)
+        .get('/api/reviews/9000/comments')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('ID Not Found');
+        });
+    }); 
+    test('400: Returns "Invalid ID" if given an "ID" that is Invalid', () =>{
+        return request(app)
+        .get('/api/reviews/notanum/comments')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Invalid ID');
+        });
+    }); 
+    it('400: POST responds with an error message when missing required information', () => {
+        const newUserComment = {
+            author: 'dav3rid',
+        }
+        return request(app)
+            .post('/api/reviews/1/comments')
+            .send(newUserComment)
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe('Error: Missing required information');
+            })
+    })
+    it('400: POST responds with an error message when missing required information', () => {
+        const newUserComment = {
+            body: "Here is the wild comment",
+        }
+        return request(app)
+            .post('/api/reviews/1/comments')
+            .send(newUserComment)
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe('Error: Missing required information');
+            })
+    })
+ })
