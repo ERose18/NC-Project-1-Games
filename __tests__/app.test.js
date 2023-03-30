@@ -262,3 +262,87 @@ describe('GET /api/reviews', () => {
     })
     
  })
+ describe('PATCH /api/reviews/:review_id', () => {
+    test('200: Updates/PATCH vote count in the reviews database (plus)', () =>{
+        const newVoteCount = {
+            new_votes: 10,
+        }
+        return request(app)
+        .patch('/api/reviews/2')
+        .send(newVoteCount)
+        .expect(200)
+        .then(({body}) => {
+            const review = body.review;
+                expect(review).toMatchObject({
+                    owner: expect.any(String),
+                    title: expect.any(String),
+                    review_id: expect.any(Number),
+                    designer: expect.any(String),
+                    review_img_url: expect.any(String),
+                    category: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+             })
+         });
+    });  
+    test('200: Updates/PATCH vote count in the reviews database (minus)', () =>{
+        const newVoteCount = {
+            new_votes: -2,
+        }
+        return request(app)
+        .patch('/api/reviews/2')
+        .send(newVoteCount)
+        .expect(200)
+        .then(({body}) => {
+            const review = body.review;
+                expect(review).toMatchObject({
+                    owner: expect.any(String),
+                    title: expect.any(String),
+                    review_id: expect.any(Number),
+                    designer: expect.any(String),
+                    review_img_url: expect.any(String),
+                    category: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+             })
+         });
+    });  
+    test('200: Should stay the same when passed a newVote count of 0', () =>{
+        const newVoteCount = {
+            new_votes: 0,
+        }
+        return request(app)
+        .patch('/api/reviews/2')
+        .send(newVoteCount)
+        .expect(200)
+        .then(({body}) => {
+            const review = body.review;
+                expect(review).toMatchObject({
+                    owner: expect.any(String),
+                    title: expect.any(String),
+                    review_id: expect.any(Number),
+                    designer: expect.any(String),
+                    review_img_url: expect.any(String),
+                    category: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+             })
+         });
+    });  
+    test('404: Returns "ID Not Found" if given an "ID" that isnt in the database', () =>{
+        return request(app)
+        .get('/api/reviews/9000')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('ID Not Found');
+        });
+    }); 
+    test('400: Returns "Invalid ID" if given an "ID" that is Invalid', () =>{
+        return request(app)
+        .get('/api/reviews/notanum')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Invalid ID');
+        });
+    }); 
+ })

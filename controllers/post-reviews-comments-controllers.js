@@ -7,10 +7,6 @@
      const {review_id} = request.params;
      const addedComment = request.body;
 
-    //  if(!addedComment.body || !addedComment.author){
-    //     response.status(400).send({msg: 'Error: Missing required information'});
-    //  };
-
      addNewReviewComment(review_id, addedComment)
      .then((comments) => {
          response.status(201).send({comments});
