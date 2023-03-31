@@ -72,6 +72,26 @@ describe('GET /api/reviews/:review_id', () => {
             }
         )
     })
+    test('200: Accepts the review with the given id WITH comment count', () => {
+        return request(app)
+        .get('/api/reviews/2')
+        .then(({body}) => {
+            const review = body.review;
+                expect(review).toMatchObject({
+                    review_id: 2,
+                    title: expect.any(String),
+                    designer: expect.any(String),
+                    owner: expect.any(String),
+                    review_img_url: expect.any(String),
+                    review_body: expect.any(String),
+                    category: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    comment_count: expect.any(Number),
+                })
+            }
+        )
+    })
     test('404: Returns "ID Not Found" if given an "ID" that isnt in the database', () =>{
         return request(app)
         .get('/api/reviews/9000')
@@ -439,6 +459,18 @@ describe('GET /api/reviews', () => {
          });
     });
     });
+    test('200: Allows for sorting by a given category via a query, if that category exists but there are no reviews, return empty array', () =>{ 
+        return request(app)
+        .get("/api/reviews?category=children's games")
+        .expect(200)
+        .then(({body}) => {
+            const reviews = body.reviews;
+            console.log(reviews)
+            reviews.forEach((review) => {
+                expect(review).toEqual([]);
+         });
+    });
+    });
     test('200: Allows for sorting of columns when given a valid column', () =>{ 
         return request(app)
         .get('/api/reviews?sort_by=votes')
@@ -463,6 +495,7 @@ describe('GET /api/reviews', () => {
         .expect(200)
         .then(({body}) => {
             const reviews = body.reviews;
+            expect(reviews.length).toBe(13);
             expect(reviews).toBeSortedBy('created_at', {descending: true});
     });
     });
@@ -481,6 +514,7 @@ describe('GET /api/reviews', () => {
         .expect(200)
         .then(({body}) => {
             const reviews = body.reviews;
+            expect(reviews.length).toBe(11);
             reviews.forEach((review) => {
                 expect(review).toMatchObject({
                     owner: expect.any(String),
