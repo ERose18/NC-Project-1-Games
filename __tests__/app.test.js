@@ -5,6 +5,7 @@ const data = require('../db/data/test-data/index');
 const seed = require('../db/seeds/seed');
 const sorted = require('jest-sorted');
 const { afterAll } = require('@jest/globals');
+const jsonEndpoints = require('../endpoints.json');
 
 beforeEach(() => {return seed(data)});
 afterAll(() => {db.end()});
@@ -577,3 +578,14 @@ describe('GET /api/reviews', () => {
     });
 })
 
+
+describe('GET /api', () => {
+    test('200: Allows for sorting by a given category via a query', () =>{ 
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then((response) => {
+                expect(response.body).toEqual(jsonEndpoints);
+         });
+    });
+ })
