@@ -8,9 +8,12 @@ const  {getUsers} = require('./controllers/get-users-controllers');
 const {getQueries} = require('./controllers/get-review-query-controller');
 const {runningServer} = require('./controllers/JSON-controller');
 const express = require('express');
+const cors = require('cors');
 const { handlePSQL400s, handleCustomError, handle500 } = require('./error-handling');
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
